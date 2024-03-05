@@ -77,7 +77,7 @@ module "ecs_service" {
         },
         {
           name  = "AWS_REGION"
-          value = data.aws_region.current.name
+          value = local.queue_region
         },
       ])
     }

@@ -10,6 +10,8 @@ variable "datahub" {
     executor_id = optional(string, "remote")
     # SQS Queue ARN
     queue_url = string
+    # SQS Queue region
+    queue_region = optional(string)
   })
 }
 
