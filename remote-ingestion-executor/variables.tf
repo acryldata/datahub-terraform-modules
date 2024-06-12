@@ -2,14 +2,18 @@ variable "datahub" {
   description = "Acryl Executor configuration"
   type = object({
     # The container image
-    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/acryl-sqs-remote-executor")
-    image_tag = optional(string, "v0.0.4.2")
+    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-executor")
+    image_tag = optional(string, "v0.3.2.1")
     # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms
     url = string
     # Unique Executor Id. Warning - do not change this without consulting with your Acryl rep
     executor_id = optional(string, "remote")
-    # SQS Queue ARN
-    queue_url = string
+    # Number of worker threads for ingestion jobs
+    executor_ingestions_workers = optional(number, 4)
+    # Number of worker threads for monitor jobs
+    executor_monitors_workers = optional(number, 10)
+    # Ingestion signal poll interval in seconds
+    executor_ingestions_poll_interval = optional(number, 5)
   })
 }
 
@@ -88,7 +92,7 @@ variable "task_exec_secret_arns" {
 variable "service_name" {
   description = "Name of the service (up to 255 letters, numbers, hyphens, and underscores)"
   type        = string
-  default     = "dh-sqs-remote-executor"
+  default     = "dh-remote-executor"
 }
 
 variable "cpu" {
