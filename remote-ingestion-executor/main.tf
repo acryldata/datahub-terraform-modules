@@ -42,18 +42,14 @@ module "ecs_service" {
   assign_public_ip     = var.assign_public_ip
 
   container_definitions = {
-    dh-sqs-remote-executor = {
+    dh-remote-executor = {
       cpu    = var.cpu
       memory = var.memory
       image  = format("%s:%s", var.datahub.image, var.datahub.image_tag)
 
       network_mode = var.network_mode
 
-      port_mappings = [
-        {
-          containerPort = 80
-        }
-      ]
+      port_mappings = []
 
       enable_cloudwatch_logging   = var.enable_cloudwatch_logging
       create_cloudwatch_log_group = var.create_cloudwatch_log_group
@@ -68,12 +64,20 @@ module "ecs_service" {
           value = var.datahub.url
         },
         {
-          name  = "AWS_COMMAND_QUEUE_URL"
-          value = var.datahub.queue_url
-        },
-        {
           name  = "EXECUTOR_ID"
           value = var.datahub.executor_id
+        },
+        {
+          name  = "DATAHUB_EXECUTOR_INGESTION_MAX_WORKERS"
+          value = var.datahub.executor_ingestions_workers
+        },
+        {
+          name  = "DATAHUB_EXECUTOR_MONITORS_MAX_WORKERS"
+          value = var.datahub.executor_monitors_workers
+        },
+        {
+          name  = "DATAHUB_EXECUTOR_INGESTION_SIGNAL_POLL_INTERVAL"
+          value = var.datahub.executor_ingestions_poll_interval
         },
         {
           name  = "AWS_REGION"
