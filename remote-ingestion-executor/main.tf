@@ -1,6 +1,6 @@
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
-  version = "5.4.0"
+  version = "5.9.2"
 
   cluster_name          = var.cluster_name
   cluster_configuration = var.cluster_configuration
@@ -10,7 +10,7 @@ module "ecs_cluster" {
 
 module "ecs_service" {
   source  = "terraform-aws-modules/ecs/aws//modules/service"
-  version = "5.4.0"
+  version = "5.9.2"
 
   cluster_arn = module.ecs_cluster.arn
   name        = var.service_name
