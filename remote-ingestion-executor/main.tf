@@ -65,12 +65,16 @@ module "ecs_service" {
 
       environment = concat(var.environment, [
         {
-          name  = "DATAHUB_BASE_URL"
+          name  = "DATAHUB_GMS_URL"
           value = var.datahub.url
         },
         {
-          name  = "EXECUTOR_ID"
+          name  = "DATAHUB_EXECUTOR_WORKER_ID"
           value = var.datahub.executor_id
+        },
+        {
+          name  = "DATAHUB_EXECUTOR_MODE"
+          value = "worker"
         },
         {
           name  = "DATAHUB_EXECUTOR_INGESTION_MAX_WORKERS"

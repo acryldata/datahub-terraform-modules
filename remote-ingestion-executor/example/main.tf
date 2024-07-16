@@ -20,7 +20,7 @@ module "example" {
 
   secrets = [
     {
-      name      = "DATAHUB_ACCESS_TOKEN"
+      name      = "DATAHUB_GMS_TOKEN"
       valueFrom = aws_secretsmanager_secret.datahub_access_token.arn
     },
   ]
