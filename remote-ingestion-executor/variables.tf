@@ -3,7 +3,7 @@ variable "datahub" {
   type = object({
     # The container image
     image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-executor")
-    image_tag = optional(string, "v0.3.8.1-acryl")
+    image_tag = optional(string, "v0.3.8.2-acryl")
     # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms
     url = string
     # Unique Executor Id. Warning - do not change this without consulting with your Acryl rep
