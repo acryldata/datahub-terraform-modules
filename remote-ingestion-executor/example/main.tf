@@ -9,7 +9,7 @@ module "example" {
 
   cluster_name = "remote-ingestion-executor-example"
 
-  create_tasks_iam_role = false
+  create_tasks_iam_role = true
 
   create_task_exec_iam_role = true
   task_exec_secret_arns = [
