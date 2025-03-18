@@ -27,6 +27,8 @@
 
 ## Inputs
 
+**NOTE**: Require variable executor_id has been renamed to executor_pool_id. Please update your config.
+
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_assign_public_ip"></a> [assign\_public\_ip](#input\_assign\_public\_ip) | Assign a public IP address to the ENI | `bool` | `true` | no |
@@ -37,7 +39,7 @@
 | <a name="input_create_task_exec_iam_role"></a> [create\_task\_exec\_iam\_role](#input\_create\_task\_exec\_iam\_role) | Determines whether the ECS task definition IAM role should be created | `bool` | `false` | no |
 | <a name="input_create_task_exec_policy"></a> [create\_task\_exec\_policy](#input\_create\_task\_exec\_policy) | Determines whether the ECS task definition IAM policy should be created. This includes permissions included in AmazonECSTaskExecutionRolePolicy as well as access to secrets and SSM parameters | `bool` | `true` | no |
 | <a name="input_create_tasks_iam_role"></a> [create\_tasks\_iam\_role](#input\_create\_tasks\_iam\_role) | Determines whether the ECS tasks IAM role should be created | `bool` | `true` | no |
-| <a name="input_datahub"></a> [datahub](#input\_datahub) | Acryl Executor configuration | <pre>object({<br>    # The container image<br>    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/acryl-sqs-remote-executor")<br>    image_tag = optional(string, "v0.0.4.2")<br>    # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms<br>    url = string<br>    # Unique Executor Id. Warning - do not change this without consulting with your Acryl rep<br>    executor_id = optional(string, "remote")<br>    # SQS Queue ARN<br>    queue_url = string<br>    # SQS Queue aws region<br>    aws_region = optional(string, data.aws_region.current.name)<br>  })</pre> | n/a | yes |
+| <a name="input_datahub"></a> [datahub](#input\_datahub) | Acryl Executor configuration | <pre>object({<br>    # The container image<br>    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/acryl-sqs-remote-executor")<br>    image_tag = optional(string, "v0.0.4.2")<br>    # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms<br>    url = string<br>    # Unique Executor Id. Warning - do not change this without consulting with your Acryl rep<br>    executor_pool_id = optional(string, "remote")<br>    # SQS Queue ARN<br>    queue_url = string<br>    # SQS Queue aws region<br>    aws_region = optional(string, data.aws_region.current.name)<br>  })</pre> | n/a | yes |
 | <a name="input_desired_count"></a> [desired\_count](#input\_desired\_count) | Number of instances of the task definition to place and keep running | `number` | `1` | no |
 | <a name="input_enable_cloudwatch_logging"></a> [enable\_cloudwatch\_logging](#input\_enable\_cloudwatch\_logging) | Determines whether CloudWatch logging is configured for the container definition | `bool` | `true` | no |
 | <a name="input_enable_execute_command"></a> [enable\_execute\_command](#input\_enable\_execute\_command) | Specifies whether to enable Amazon ECS Exec for the tasks within the service | `bool` | `true` | no |

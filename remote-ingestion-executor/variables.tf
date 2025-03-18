@@ -6,8 +6,8 @@ variable "datahub" {
     image_tag = optional(string, "v0.3.8.2-acryl")
     # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms
     url = string
-    # Unique Executor Id. Warning - do not change this without consulting with your Acryl rep
-    executor_id = optional(string, "remote")
+    # Unique Executor Pool Id. Warning - do not change this without consulting with your Acryl rep
+    executor_pool_id = optional(string, "remote")
     # Number of worker threads for ingestion jobs
     executor_ingestions_workers = optional(number, 4)
     # Number of worker threads for monitor jobs
