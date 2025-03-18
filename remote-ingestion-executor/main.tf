@@ -69,8 +69,8 @@ module "ecs_service" {
           value = var.datahub.url
         },
         {
-          name  = "DATAHUB_EXECUTOR_WORKER_ID"
-          value = var.datahub.executor_id
+          name  = "DATAHUB_EXECUTOR_POOL_ID"
+          value = var.datahub.executor_pool_id
         },
         {
           name  = "DATAHUB_EXECUTOR_MODE"
