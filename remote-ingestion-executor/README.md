@@ -27,7 +27,7 @@
 
 ## Inputs
 
-**NOTE**: Require variable executor_id has been renamed to executor_pool_id. Please update your config.
+**NOTE**: Required variable executor_id has been renamed to executor_pool_id. Please update your config.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
