@@ -1,0 +1,68 @@
+# Example terraform.tfvars file for DataHub Remote Executor deployment
+# Copy this file to terraform.tfvars and update the values
+
+# Required variables
+project_id     = "your-gcp-project-id"
+cluster_name   = "your-gke-cluster-name"
+region         = "us-central1"
+
+# DataHub Configuration
+datahub_gms_url      = "https://your-datahub-instance.com/gms"
+datahub_access_token = "your-datahub-access-token"
+datahub_remote_executor_pool_id     = "gke-executor-pool"
+
+# Container Registry Configuration
+container_registry_url      = "gcr.io/your-project-id"  # or us-docker.pkg.dev/your-project-id/your-repo
+container_registry_username = "_json_key"                # Use "_json_key" for GCR with service account key
+container_registry_password = "your-service-account-key-json"  # Base64 encoded service account key
+
+# Optional: Override default values
+kubernetes_namespace = "datahub-remote-executor"
+environment         = "dev"  # dev, test, or prod
+
+# Image Configuration
+image_repository = "docker.datahub.com/enterprise/datahub-executor"
+image_tag       = "v0.3.13-acryl"
+
+# Scaling Configuration
+replica_count              = 1
+ingestion_max_workers      = 2
+ingestion_signal_poll_interval = 5
+monitors_max_workers       = 2
+
+# Resource Configuration
+resources_requests_memory = "512Mi"
+resources_requests_cpu    = "250m"
+resources_limits_memory   = "1Gi"
+resources_limits_cpu      = "500m"
+
+# GKE Configuration
+create_namespace           = true
+enable_workload_identity   = false  # Set to true if you want to use Workload Identity
+gcp_service_account_name   = "datahub-executor-sa"
+
+# Additional Configuration
+enable_debug = false
+
+# Custom Transformers Configuration (automatically enabled when path is set)
+custom_transformers_path = "sample/transformers"  # Set to "" to disable custom transformers
+
+# Optional: Pod annotations
+pod_annotations = {
+  "co.elastic.logs/enabled" = "true"
+}
+
+# Optional: Node selector
+node_selector = {
+  "cloud.google.com/gke-nodepool" = "default-pool"
+}
+
+# Optional: Tolerations
+# tolerations = [
+#   {
+#     key      = "node-role"
+#     operator = "Equal"
+#     value    = "datahub"
+#     effect   = "NoSchedule"
+#   }
+# ]

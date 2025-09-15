@@ -1,0 +1,108 @@
+global:
+  datahub:
+    gms:
+      secretRef: datahub-access-token-secret
+      secretKey: datahub-access-token-secret-key
+      url: https://datahub.acryl.io/gms
+    executor:
+      pool_id: "remote"
+      ingestions:
+        max_workers: 4
+        signal_poll_interval: 2
+      monitors:
+        max_workers: 10
+
+workloadKind: Deployment
+
+replicaCount: 1
+
+revisionHistoryLimit: 1
+
+image:
+  # GCP: us-docker.pkg.dev/acryl-prod/datahub/datahub-executor
+  repository: 795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-executor
+  pullPolicy: Always
+  tag: v0.3.13-acryl
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+terminationGracePeriodSeconds: 150
+
+pdb:
+  enabled: false
+  minAvailable: 1
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podAnnotations: {}
+  # co.elastic.logs/enabled: "true"
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+extraEnvs: []
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraInitContainers: []
+
+extraCaCerts: {}
+
+extraLabels: {}
+
+extraPodLabels: {}
+
+resources:
+  requests:
+    memory: "8Gi"
+    cpu: "4"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  failureThreshold: 3
+  timeoutSeconds: 5
+
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 60
+  failureThreshold: 3
+  timeoutSeconds: 5
+
+persistentVolume:
+  # Requires workloadKind: StatefulSet
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  annotations: {}
+  labels: {}
+  existingClaim: ""
+  mountPath: /tmp/datahub
+  size: 100Gi
+  # storageClass: "-"
+  subPath: ""
