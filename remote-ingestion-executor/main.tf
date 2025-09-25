@@ -70,7 +70,7 @@ module "ecs_service" {
         },
         {
           name  = (local.version_legacy ? "DATAHUB_EXECUTOR_WORKER_ID" : "DATAHUB_EXECUTOR_POOL_ID")
-          value = (local.version_legacy ? var.datahub.executor_pool_id : var.datahub.executor_id)
+          value = (local.version_legacy ? var.datahub.executor_id : var.datahub.executor_pool_id)
         },
         {
           name  = "DATAHUB_EXECUTOR_MODE"
