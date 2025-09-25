@@ -196,6 +196,17 @@ variable "requires_compatibilities" {
   default     = ["EC2", "FARGATE"]
 }
 
+variable "launch_type" {
+  description = "Launch type for the ECS service (EC2 or FARGATE)"
+  type        = string
+  default     = "FARGATE"
+  
+  validation {
+    condition     = contains(["EC2", "FARGATE"], var.launch_type)
+    error_message = "Launch type must be either 'EC2' or 'FARGATE'."
+  }
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)

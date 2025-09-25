@@ -31,7 +31,7 @@ module "ecs_service" {
   cpu           = var.cpu
   memory        = var.memory
   desired_count = var.desired_count
-  launch_type   = "FARGATE"
+  launch_type   = var.launch_type
 
   enable_execute_command   = var.enable_execute_command
   requires_compatibilities = var.requires_compatibilities
