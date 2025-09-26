@@ -190,6 +190,12 @@ variable "enable_execute_command" {
   default     = true
 }
 
+variable "enable_autoscaling" {
+  description = "Determines whether to enable autoscaling for the service"
+  type        = bool
+  default     = false
+}
+
 variable "launch_type" {
   description = "Launch type for the ECS service (EC2 or FARGATE)"
   type        = string

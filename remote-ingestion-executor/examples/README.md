@@ -41,8 +41,8 @@ cp ec2.tfvars terraform.tfvars
 
 ```bash
 terraform init
-terraform plan
-terraform apply
+terraform plan -var-file=ec2.tfvars  # or fargate.tfvars
+terraform apply -var-file=ec2.tfvars
 ```
 
 ## Configuration Details

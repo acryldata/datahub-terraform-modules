@@ -5,7 +5,7 @@ This Terraform module deploys the DataHub Remote Ingestion Executor on AWS ECS, 
 ## Features
 
 - **Dual Launch Type Support**: Deploy on either ECS Fargate or EC2
-- **Automatic Infrastructure**: For EC2, automatically creates NAT Gateway, private subnets, and Auto Scaling Group
+- **Existing Infrastructure Integration**: Uses your existing subnets and networking
 - **Minimal Configuration Changes**: The same module works for both deployment types
 - **Production Ready**: Includes proper IAM roles, security groups, and logging
 
@@ -54,8 +54,8 @@ module "datahub_remote_executor" {
   memory = 1024
   
   ec2_config = {
-    instance_type     = "t3.large"
-    desired_capacity  = 1
+    private_subnet_ids = ["subnet-xxx", "subnet-yyy", "subnet-zzz"]
+    instance_type      = "t3.large"
   }
   
   # ... other configuration
@@ -143,9 +143,8 @@ See [`variables.tf`](./variables.tf) for complete input documentation.
 | cluster_arn | ARN of the ECS cluster |
 | service_name | Name of the ECS service |
 | task_definition_arn | ARN of the task definition |
-| nat_gateway_public_ip | Public IP of NAT Gateway (EC2 only) |
-| private_subnet_ids | Private subnet IDs (EC2 only) |
-| autoscaling_group_name | Auto Scaling Group name (EC2 only) |
+| private_subnet_ids | Private subnet IDs used (EC2 only) |
+| instance_id | EC2 instance ID (EC2 only) |
 
 ## License
 

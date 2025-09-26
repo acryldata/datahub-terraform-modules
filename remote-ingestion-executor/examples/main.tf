@@ -1,5 +1,9 @@
 # Example usage of the DataHub Remote Ingestion Executor module
 # This file shows how to deploy either Fargate or EC2 configurations
+#
+# Usage:
+#   terraform apply -var-file=fargate.tfvars.example
+#   terraform apply -var-file=ec2.tfvars.example
 
 terraform {
   required_version = "~> 1.0"
@@ -17,14 +21,108 @@ provider "aws" {
   region = "us-west-2"  # Change to your preferred region
 }
 
+# Variables that correspond to the .tfvars files
+# These are minimal and just pass through to the main module
+variable "cluster_name" { 
+  type = string 
+}
+
+variable "datahub" { 
+  type = any 
+}
+
+variable "service_name" { 
+  type = string 
+}
+
+variable "desired_count" { 
+  type = number 
+}
+
+variable "launch_type" { 
+  type = string 
+}
+
+variable "cpu" { 
+  type = number 
+}
+
+variable "memory" { 
+  type = number 
+}
+
+variable "ec2_config" { 
+  type    = any
+  default = {} 
+}
+
+variable "subnet_ids" { 
+  type    = list(string)
+  default = [] 
+}
+
+variable "assign_public_ip" { 
+  type    = bool
+  default = false 
+}
+
+variable "security_group_rules" { 
+  type    = any
+  default = {} 
+}
+
+variable "create_tasks_iam_role" { 
+  type    = bool
+  default = true 
+}
+
+variable "create_task_exec_iam_role" { 
+  type    = bool
+  default = true 
+}
+
+variable "task_exec_secret_arns" { 
+  type    = list(string)
+  default = [] 
+}
+
+variable "secrets" { 
+  type    = any
+  default = [] 
+}
+
+variable "enable_cloudwatch_logging" { 
+  type    = bool
+  default = true 
+}
+
+variable "create_cloudwatch_log_group" { 
+  type    = bool
+  default = true 
+}
+
+variable "enable_execute_command" { 
+  type    = bool
+  default = true 
+}
+
+variable "environment" { 
+  type    = any
+  default = [] 
+}
+
+variable "tags" { 
+  type    = map(string)
+  default = {} 
+}
+
 # Deploy the DataHub Remote Ingestion Executor
 module "datahub_remote_executor" {
   source = "../"
 
-  # Use variables from either fargate.tfvars or ec2.tfvars
+  # Pass through all variables from .tfvars files
   cluster_name = var.cluster_name
-  
-  datahub = var.datahub
+  datahub      = var.datahub
   
   service_name  = var.service_name
   desired_count = var.desired_count
@@ -33,10 +131,8 @@ module "datahub_remote_executor" {
   cpu    = var.cpu
   memory = var.memory
   
-  # EC2-specific configuration (only used when launch_type = "EC2")
   ec2_config = var.ec2_config
   
-  # Network configuration (only used when launch_type = "FARGATE")
   subnet_ids       = var.subnet_ids
   assign_public_ip = var.assign_public_ip
   
@@ -53,8 +149,7 @@ module "datahub_remote_executor" {
   enable_execute_command      = var.enable_execute_command
   
   environment = var.environment
-  
-  tags = var.tags
+  tags        = var.tags
 }
 
 # Output important information

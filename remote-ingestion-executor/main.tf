@@ -114,5 +114,7 @@ module "ecs_service" {
     }
   }
 
+  enable_autoscaling = var.enable_autoscaling
+
   tags = var.tags
 }
