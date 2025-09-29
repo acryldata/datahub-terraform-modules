@@ -31,13 +31,6 @@ resource "aws_security_group" "ecs_instances" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 32768
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
-  }
-
   tags = merge(var.tags, {
     Name = "${var.cluster_name}-ecs-instances-sg"
   })
@@ -83,6 +76,18 @@ resource "aws_instance" "ecs_instance" {
   
   vpc_security_group_ids = [aws_security_group.ecs_instances.id]
   iam_instance_profile   = aws_iam_instance_profile.ecs_instance_profile.name
+  
+  # Explicit EBS configuration to avoid SCP issues
+  root_block_device {
+    volume_type           = "gp3"
+    volume_size           = 30
+    delete_on_termination = true
+    encrypted             = true
+    
+    tags = merge(var.tags, {
+      Name = "${var.cluster_name}-ecs-instance-root"
+    })
+  }
   
   user_data = base64encode(templatefile("${path.module}/user_data.tpl", {
     cluster_name = var.cluster_name
