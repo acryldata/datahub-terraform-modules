@@ -81,7 +81,7 @@ module "ecs_service" {
 
       secrets = var.secrets
 
-      environment = concat(var.environment, [
+      environment = concat(var.env_vars, [
         {
           name  = "DATAHUB_GMS_URL"
           value = var.datahub.url

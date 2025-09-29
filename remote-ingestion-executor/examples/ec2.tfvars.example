@@ -73,7 +73,7 @@ create_cloudwatch_log_group = true
 enable_execute_command = true
 
 # Environment Variables (optional)
-environment = [
+env_vars = [
   {
     name  = "DATAHUB_DEBUG"
     value = "false"

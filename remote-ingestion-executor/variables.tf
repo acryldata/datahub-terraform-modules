@@ -169,7 +169,7 @@ variable "secrets" {
   default = []
 }
 
-variable "environment" {
+variable "env_vars" {
   description = "The environment variables to pass to the container"
   type = list(object({
     name  = string

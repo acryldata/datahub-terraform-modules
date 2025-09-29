@@ -106,7 +106,7 @@ variable "enable_execute_command" {
   default = true 
 }
 
-variable "environment" { 
+variable "env_vars" { 
   type    = any
   default = [] 
 }
@@ -148,7 +148,7 @@ module "datahub_remote_executor" {
   create_cloudwatch_log_group = var.create_cloudwatch_log_group
   enable_execute_command      = var.enable_execute_command
   
-  environment = var.environment
+  env_vars = var.env_vars
   tags        = var.tags
 }
 
