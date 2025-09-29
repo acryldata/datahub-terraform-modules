@@ -1,0 +1,90 @@
+# Example configuration for DataHub Remote Ingestion Executor on AWS ECS Fargate
+
+# Cluster Configuration
+cluster_name = "datahub-remote-executor-fargate"
+
+# DataHub Configuration
+datahub = {
+  url                              = "https://your-company.acryl.io/gms"
+  executor_pool_id                 = "ecs-executor-pool"
+  executor_ingestions_workers      = 4
+  executor_monitors_workers        = 10
+  executor_ingestions_poll_interval = 5
+}
+
+# Service Configuration
+service_name   = "datahub-remote-executor"
+desired_count  = 1
+launch_type    = "FARGATE"
+
+# Resource Configuration for Fargate
+cpu    = 1024  # 1 vCPU
+memory = 2048  # 2 GB
+
+# Network Configuration - Use your existing public subnets
+subnet_ids = [
+  "subnet-xxxxxxxx",  # Replace with your subnet ID
+  "subnet-yyyyyyyy",  # Replace with your subnet ID
+]
+
+# Public IP assignment for internet access
+assign_public_ip = true
+
+# Security Group Rules
+security_group_rules = {
+  egress_all = {
+    type        = "egress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# IAM Roles
+create_tasks_iam_role     = true
+create_task_exec_iam_role = true
+
+# Secrets Manager - Replace with your secret ARN
+# Create your secret via:
+# `aws secretsmanager create-secret --name "datahub-access-token" --description "DataHub GMS access token for remote executor" --secret-string "<DATAHUB_TOKEN>" --region <AWS_REGION>`
+task_exec_secret_arns = [
+  "arn:aws:secretsmanager:us-west-2:123456789012:secret:datahub-access-token-xxxxxx",
+]
+
+secrets = [
+  {
+    name      = "DATAHUB_GMS_TOKEN"
+    valueFrom = "arn:aws:secretsmanager:us-west-2:123456789012:secret:datahub-access-token-xxxxxx"
+  }
+]
+
+# CloudWatch Logging
+enable_cloudwatch_logging   = true
+create_cloudwatch_log_group = true
+
+# ECS Exec
+enable_execute_command = true
+
+# Environment Variables (optional)
+env_vars = [
+  {
+    name  = "DATAHUB_DEBUG"
+    value = "false"
+  },
+  {
+    name  = "CELERY_LOG_LEVEL"
+    value = "INFO"
+  },
+  {
+    name  = "PYTHONUNBUFFERED"
+    value = "1"
+  }
+]
+
+# Tags
+tags = {
+  Environment = "production"
+  Project     = "datahub-remote-executor"
+  ManagedBy   = "terraform"
+}

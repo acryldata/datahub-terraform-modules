@@ -1,3 +1,15 @@
+# EC2 Infrastructure Module (only created when launch_type is EC2)
+module "ec2_infrastructure" {
+  count  = var.launch_type == "EC2" ? 1 : 0
+  source = "./modules/ec2-infrastructure"
+
+  cluster_name       = var.cluster_name
+  private_subnet_ids = var.ec2_config.private_subnet_ids
+  instance_type      = var.ec2_config.instance_type
+
+  tags = var.tags
+}
+
 module "ecs_cluster" {
   source  = "terraform-aws-modules/ecs/aws//modules/cluster"
   version = "5.9.2"
@@ -31,15 +43,21 @@ module "ecs_service" {
   cpu           = var.cpu
   memory        = var.memory
   desired_count = var.desired_count
-  launch_type   = "FARGATE"
+  launch_type   = var.launch_type
 
   enable_execute_command   = var.enable_execute_command
-  requires_compatibilities = var.requires_compatibilities
 
-  subnet_ids           = var.subnet_ids
-  security_group_ids   = var.security_group_ids
+  # Use EC2 infrastructure outputs for EC2 launch type, otherwise use provided values
+  subnet_ids = var.launch_type == "EC2" ? (
+    length(module.ec2_infrastructure) > 0 ? module.ec2_infrastructure[0].private_subnet_ids : []
+  ) : var.subnet_ids
+  
+  security_group_ids = var.launch_type == "EC2" ? (
+    length(module.ec2_infrastructure) > 0 ? [module.ec2_infrastructure[0].security_group_id] : []
+  ) : var.security_group_ids
+  
   security_group_rules = var.security_group_rules
-  assign_public_ip     = var.assign_public_ip
+  assign_public_ip     = var.launch_type == "EC2" ? false : var.assign_public_ip
 
   container_definitions = {
     dh-remote-executor = {
@@ -63,14 +81,14 @@ module "ecs_service" {
 
       secrets = var.secrets
 
-      environment = concat(var.environment, [
+      environment = concat(var.env_vars, [
         {
           name  = "DATAHUB_GMS_URL"
           value = var.datahub.url
         },
         {
           name  = (local.version_legacy ? "DATAHUB_EXECUTOR_WORKER_ID" : "DATAHUB_EXECUTOR_POOL_ID")
-          value = (local.version_legacy ? var.datahub.executor_pool_id : var.datahub.executor_id)
+          value = (local.version_legacy ? var.datahub.executor_id : var.datahub.executor_pool_id)
         },
         {
           name  = "DATAHUB_EXECUTOR_MODE"
@@ -95,6 +113,8 @@ module "ecs_service" {
       ])
     }
   }
+
+  enable_autoscaling = var.enable_autoscaling
 
   tags = var.tags
 }
