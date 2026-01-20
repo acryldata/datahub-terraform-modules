@@ -41,6 +41,8 @@ module "ecs_service" {
   security_group_rules = var.security_group_rules
   assign_public_ip     = var.assign_public_ip
 
+  propagate_tags = var.propagate_tags
+
   container_definitions = {
     dh-remote-executor = {
       cpu    = var.cpu
