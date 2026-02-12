@@ -1,6 +1,9 @@
 # Local .terraform directories
 **/.terraform/*
 
+# Lock file - modules should not commit lock files
+.terraform.lock.hcl
+
 # .tfstate files
 *.tfstate
 *.tfstate.*
