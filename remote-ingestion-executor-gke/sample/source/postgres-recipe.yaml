@@ -1,0 +1,18 @@
+source:
+  type: postgres
+  config:
+    host_port: 'postgres.postgres-test.svc.cluster.local:5432'
+    database: testdb
+    username: postgres
+    include_tables: true
+    include_views: true
+    profiling:
+      enabled: true
+      profile_table_level_only: true
+    stateful_ingestion:
+      enabled: true
+    password: postgres123
+transformers:
+  - type: custom_transform_example.AddCustomOwnership
+    config:
+      owners_json: "/opt/datahub/transformers/owners.json"
