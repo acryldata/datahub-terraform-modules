@@ -169,7 +169,7 @@ variable "secrets" {
   default = []
 }
 
-variable "environment" {
+variable "env_vars" {
   description = "The environment variables to pass to the container"
   type = list(object({
     name  = string
@@ -190,10 +190,31 @@ variable "enable_execute_command" {
   default     = true
 }
 
-variable "requires_compatibilities" {
-  description = "Set of launch types required by the task"
-  type        = list(string)
-  default     = ["EC2", "FARGATE"]
+variable "enable_autoscaling" {
+  description = "Determines whether to enable autoscaling for the service"
+  type        = bool
+  default     = false
+}
+
+variable "launch_type" {
+  description = "Launch type for the ECS service (EC2 or FARGATE)"
+  type        = string
+  default     = "FARGATE"
+  
+  validation {
+    condition     = contains(["EC2", "FARGATE"], var.launch_type)
+    error_message = "Launch type must be either 'EC2' or 'FARGATE'."
+  }
+}
+
+# EC2-specific configuration
+variable "ec2_config" {
+  description = "Configuration for EC2 launch type"
+  type = object({
+    private_subnet_ids = optional(list(string), [])
+    instance_type      = optional(string, "t3.large")
+  })
+  default = {}
 }
 
 variable "tags" {
