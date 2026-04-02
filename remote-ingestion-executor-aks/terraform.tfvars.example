@@ -1,0 +1,133 @@
+# ============================================================================
+# DataHub Remote Executor on Azure AKS - Example Configuration
+# ============================================================================
+#
+# Copy this file to terraform.tfvars and fill in your values:
+#   cp terraform.tfvars.example terraform.tfvars
+#
+
+# ============================================================================
+# Azure Configuration (Required)
+# ============================================================================
+
+subscription_id     = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+resource_group_name = "my-aks-resource-group"
+aks_cluster_name    = "my-aks-cluster"
+
+# ============================================================================
+# DataHub Configuration (Required)
+# ============================================================================
+
+# DataHub GMS endpoint - must include /gms suffix
+datahub_gms_url = "https://your-company.acryl.io/gms"
+
+# DataHub access token - generate from DataHub UI → Settings → Access Tokens
+datahub_access_token = "your-datahub-access-token"
+
+# Executor pool ID - must match the pool created in DataHub UI
+datahub_remote_executor_pool_id = "aks-executor-pool"
+
+# ============================================================================
+# Container Registry Configuration (Required)
+# ============================================================================
+
+# Azure Container Registry URL
+container_registry_url = "customername.azurecr.io"
+
+# Full image path (should match your ACR)
+image_repository = "customername.azurecr.io/datahub-executor"
+
+# Image version (check with DataHub team for latest)
+image_tag = "v0.3.13-acryl"
+
+# ============================================================================
+# Authentication Method (Choose One)
+# ============================================================================
+
+# Option 1: Azure AD Workload Identity (Recommended for Production)
+# Requires AKS 1.24+ with OIDC issuer and Workload Identity enabled
+enable_workload_identity = true
+azure_identity_name      = "datahub-executor-identity"
+acr_name                 = "customername"
+acr_resource_group_name  = "my-acr-resource-group"
+
+# Option 2: Image Pull Secrets (Alternative)
+# enable_workload_identity    = false
+# container_registry_username = "customername"
+# container_registry_password = "acr-password-or-token"
+
+# ============================================================================
+# Network Configuration for Locked-Down Environments (Optional)
+# ============================================================================
+
+# Scenario 1: Direct connectivity (VPN/ExpressRoute to AWS)
+# http_proxy  = ""
+# https_proxy = ""
+
+# Scenario 2: HTTP/HTTPS Proxy
+http_proxy  = "http://proxy.company.internal:8080"
+https_proxy = "http://proxy.company.internal:8080"
+no_proxy    = "localhost,127.0.0.1,.svc,.cluster.local"
+
+# ============================================================================
+# Executor Configuration (Optional)
+# ============================================================================
+
+# Kubernetes namespace
+kubernetes_namespace = "datahub-remote-executor"
+
+# Environment tag
+environment = "prod"
+
+# Number of executor replicas (scale based on workload)
+replica_count = 2
+
+# Worker configuration
+ingestion_max_workers          = 2
+ingestion_signal_poll_interval = 5
+monitors_max_workers           = 2
+
+# ============================================================================
+# Resource Limits (Optional)
+# ============================================================================
+
+resources_requests_cpu    = "250m"
+resources_requests_memory = "512Mi"
+resources_limits_cpu      = "500m"
+resources_limits_memory   = "1Gi"
+
+# ============================================================================
+# Pod Scheduling (Optional)
+# ============================================================================
+
+# Node selector - schedule pods on specific nodes
+# node_selector = {
+#   "agentpool" = "datahub"
+# }
+
+# Tolerations - allow scheduling on tainted nodes
+# tolerations = [
+#   {
+#     key      = "dedicated"
+#     operator = "Equal"
+#     value    = "datahub"
+#     effect   = "NoSchedule"
+#   }
+# ]
+
+# ============================================================================
+# Advanced Configuration (Optional)
+# ============================================================================
+
+# Enable debug logging
+enable_debug = false
+
+# Custom transformers (if you have custom transformation logic)
+# custom_transformers_path = "sample/transformers"
+
+# Additional pod annotations
+# pod_annotations = {
+#   "prometheus.io/scrape" = "true"
+#   "prometheus.io/port"   = "9090"
+# }
+
