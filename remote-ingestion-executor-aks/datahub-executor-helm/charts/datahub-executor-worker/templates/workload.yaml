@@ -1,0 +1,180 @@
+apiVersion: apps/v1
+kind: {{ .Values.workloadKind }}
+metadata:
+  name: {{ include "datahub-executor-worker.fullname" . }}
+  labels:
+    {{- include "datahub-executor-worker.labels" . | nindent 4 }}
+    {{- range $key, $val := .Values.extraLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
+spec:
+  replicas: {{if .Values.global.readonly}} 0 {{else}} {{ .Values.replicaCount }} {{end}}
+  selector:
+    matchLabels:
+      {{- include "datahub-executor-worker.selectorLabels" . | nindent 6 }}
+  {{- if .Values.persistentVolume.enabled }}
+  {{- if ne .Values.workloadKind "StatefulSet" }}
+  {{- fail "workloadKind must be set to StatefulSet when persistent volume is enabled" }}
+  {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        {{- with .Values.persistentVolume.annotations }}
+        annotations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.persistentVolume.labels }}
+        labels:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        name: executor-storage-volume
+      spec:
+        accessModes:
+          {{ toYaml .Values.persistentVolume.accessModes }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+        resources:
+          requests:
+            storage: "{{ .Values.persistentVolume.size }}"
+  {{- end }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "datahub-executor-worker.selectorLabels" . | nindent 8 }}
+        {{- range $key, $value := .Values.extraPodLabels }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "datahub-executor-worker.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      {{- with .Values.extraCaCerts }}
+          - name: ca-certs
+            emptyDir: {}
+      {{- range $key, $value := . }}
+          - name: {{ $key }}
+            secret:
+              secretName: {{ $value }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.extraVolumes }}
+        {{ toYaml .Values.extraVolumes | nindent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.extraCaCerts }}
+        - name: install-ca-certs
+          image: "{{ .Values.image.repository }}:{{ required "image tag is required" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash", "-c"]
+          args:
+            - update-ca-certificates && cp -Lr /etc/ssl/certs/. /mnt/ca-certs/
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          volumeMounts:
+            - name: ca-certs
+              mountPath: /mnt/ca-certs
+            {{- with .Values.extraCaCerts -}}
+            {{ range $key, $value := . }}
+            - mountPath: "/usr/local/share/ca-certificates/{{ $key }}"
+              name: {{ $key | quote }}
+              readOnly: true
+            {{- end }}
+            {{- end }}
+      {{- end }}
+      {{- if .Values.extraInitContainers }}
+      {{- .Values.extraInitContainers | toYaml | nindent 6 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ required "image tag is required" .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["dockerize", "/start_datahub_executor.sh"]
+          livenessProbe:
+            exec:
+              command:
+              - /health_status
+              - /tmp/worker_liveness_heartbeat
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            exec:
+              command:
+              - /health_status
+              - /tmp/worker_readiness_heartbeat
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          env:
+            - name: DATAHUB_GMS_URL
+              value: {{ ((.Values.global.datahub).gms).url }}
+            - name: DATAHUB_GMS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ ((.Values.global.datahub).gms).secretRef }}
+                  key: {{ ((.Values.global.datahub).gms).secretKey }}
+            - name: DATAHUB_EXECUTOR_MODE
+              value: "worker"
+            - name: DATAHUB_EXECUTOR_POOL_ID
+              value: {{ .Values.global.datahub.executor.pool_id | quote }}
+            - name: DATAHUB_EXECUTOR_WORKER_ID
+              value: {{ .Values.global.datahub.executor.pool_id | quote }}
+            - name: DATAHUB_EXECUTOR_INGESTION_MAX_WORKERS
+              value: {{ .Values.global.datahub.executor.ingestions.max_workers | quote }}
+            - name: DATAHUB_EXECUTOR_INGESTION_SIGNAL_POLL_INTERVAL
+              value: {{ .Values.global.datahub.executor.ingestions.signal_poll_interval | quote }}
+            - name: DATAHUB_EXECUTOR_MONITORS_MAX_WORKERS
+              value: {{ .Values.global.datahub.executor.monitors.max_workers | quote }}
+          {{- if .Values.extraEnvs -}}
+            {{ toYaml .Values.extraEnvs | nindent 12 }}
+          {{- end }}
+          {{- if .Values.extraEnvsFrom }}
+          envFrom:
+            {{- toYaml .Values.extraEnvsFrom | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            {{- if .Values.extraCaCerts }}
+            - name: ca-certs
+              mountPath: /etc/ssl/certs
+            {{- end }}
+          {{- if .Values.persistentVolume.enabled }}
+            - name: executor-storage-volume
+              mountPath: {{ .Values.persistentVolume.mountPath }}
+          {{- end }}
+          {{- if .Values.extraVolumeMounts }}
+            {{ toYaml .Values.extraVolumeMounts | nindent 10 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
