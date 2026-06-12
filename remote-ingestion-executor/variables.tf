@@ -196,6 +196,14 @@ variable "requires_compatibilities" {
   default     = ["EC2", "FARGATE"]
 }
 
+variable "ephemeral_storage" {
+  description = "The amount of ephemeral storage (in GiB) to allocate to the task. Fargate default is 20 GiB; valid range is 21–200 GiB. Increase this if you see '[Errno 28] No space left on device' errors during large ingestions (e.g. Snowflake)."
+  type = object({
+    size_in_gib = number
+  })
+  default = null
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
