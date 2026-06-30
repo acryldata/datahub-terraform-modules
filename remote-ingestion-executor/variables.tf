@@ -193,7 +193,7 @@ variable "enable_execute_command" {
 variable "requires_compatibilities" {
   description = "Set of launch types required by the task"
   type        = list(string)
-  default     = ["EC2", "FARGATE"]
+  default     = ["FARGATE"]
 }
 
 variable "ephemeral_storage" {
