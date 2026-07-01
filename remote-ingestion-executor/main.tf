@@ -47,7 +47,7 @@ module "ecs_service" {
       memory = var.memory
       image  = format("%s:%s", var.datahub.image, var.datahub.image_tag)
 
-      command = ["dockerize", "/start_datahub_executor.sh"]
+      command = ["/start_datahub_executor.sh"]
       health_check = {
         command = ["CMD-SHELL", "/health_status /tmp/worker_liveness_heartbeat || exit 1"]
       }
