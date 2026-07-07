@@ -28,10 +28,11 @@ module "ecs_service" {
   task_exec_ssm_param_arns    = var.task_exec_ssm_param_arns
   task_exec_secret_arns       = var.task_exec_secret_arns
 
-  cpu           = var.cpu
-  memory        = var.memory
-  desired_count = var.desired_count
-  launch_type   = "FARGATE"
+  cpu               = var.cpu
+  memory            = var.memory
+  ephemeral_storage = var.ephemeral_storage
+  desired_count     = var.desired_count
+  launch_type       = "FARGATE"
 
   enable_execute_command   = var.enable_execute_command
   requires_compatibilities = var.requires_compatibilities
