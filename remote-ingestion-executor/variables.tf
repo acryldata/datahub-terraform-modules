@@ -142,6 +142,17 @@ variable "assign_public_ip" {
   default     = true
 }
 
+variable "propagate_tags" {
+  description = "Whether to propagate the tags from the task definition or the service to the tasks. The valid values are SERVICE and TASK_DEFINITION"
+  type        = string
+  default     = "NONE"
+
+  validation {
+    condition     = contains(["SERVICE", "TASK_DEFINITION", "NONE"], upper(var.propagate_tags))
+    error_message = "propagate_tags must be one of SERVICE, TASK_DEFINITION, or NONE."
+  }
+}
+
 variable "enable_cloudwatch_logging" {
   description = "Determines whether CloudWatch logging is configured for the container definition"
   type        = bool
