@@ -2,35 +2,33 @@
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.100.0 |
 
 ## Modules
 
 | Name | Source | Version |
-|------|--------|---------|
-| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws//modules/cluster | 5.4.0 |
-| <a name="module_ecs_service"></a> [ecs\_service](#module\_ecs\_service) | terraform-aws-modules/ecs/aws//modules/service | 5.4.0 |
+| ---- | ------ | ------- |
+| <a name="module_ecs_cluster"></a> [ecs\_cluster](#module\_ecs\_cluster) | terraform-aws-modules/ecs/aws//modules/cluster | 5.9.2 |
+| <a name="module_ecs_service"></a> [ecs\_service](#module\_ecs\_service) | terraform-aws-modules/ecs/aws//modules/service | 5.9.2 |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
-**NOTE**: Required variable executor_id has been renamed to executor_pool_id. Please update your config.
-
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_assign_public_ip"></a> [assign\_public\_ip](#input\_assign\_public\_ip) | Assign a public IP address to the ENI | `bool` | `true` | no |
 | <a name="input_cluster_configuration"></a> [cluster\_configuration](#input\_cluster\_configuration) | The execute command configuration for the cluster | `any` | `{}` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of the cluster (up to 255 letters, numbers, hyphens, and underscores) | `string` | `""` | no |
@@ -39,20 +37,20 @@
 | <a name="input_create_task_exec_iam_role"></a> [create\_task\_exec\_iam\_role](#input\_create\_task\_exec\_iam\_role) | Determines whether the ECS task definition IAM role should be created | `bool` | `false` | no |
 | <a name="input_create_task_exec_policy"></a> [create\_task\_exec\_policy](#input\_create\_task\_exec\_policy) | Determines whether the ECS task definition IAM policy should be created. This includes permissions included in AmazonECSTaskExecutionRolePolicy as well as access to secrets and SSM parameters | `bool` | `true` | no |
 | <a name="input_create_tasks_iam_role"></a> [create\_tasks\_iam\_role](#input\_create\_tasks\_iam\_role) | Determines whether the ECS tasks IAM role should be created | `bool` | `true` | no |
-| <a name="input_datahub"></a> [datahub](#input\_datahub) | Acryl Executor configuration | <pre>object({<br>    # The container image<br>    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-executor")<br>    image_tag = optional(string, "v0.3.17-acryl")<br>    # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms<br>    url = string<br>    # Unique Executor Pool Id. Warning - do not change this without consulting with your Acryl rep<br>    executor_pool_id = optional(string, "remote")<br>    # This variable is DEPRECATED. Use executor_pool_id instead.<br>    executor_id = optional(string, "remote")<br>    # Number of worker threads for ingestion jobs<br>    executor_ingestions_workers = optional(number, 4)<br>    # Number of worker threads for monitor jobs<br>    executor_monitors_workers = optional(number, 10)<br>    # Ingestion signal poll interval in seconds<br>    executor_ingestions_poll_interval = optional(number, 5)<br>  })</pre> | n/a | yes |
+| <a name="input_datahub"></a> [datahub](#input\_datahub) | Acryl Executor configuration | <pre>object({<br/>    # The container image<br/>    image     = optional(string, "795586375822.dkr.ecr.us-west-2.amazonaws.com/datahub-executor")<br/>    image_tag = optional(string, "v2.0.4-cloud")<br/>    # Acryl DataHub URL: The URL for your DataHub instance, e.g. <your-company>.acryl.io/gms<br/>    url = string<br/><br/>    # Unique Executor Pool Id. Warning - do not change this without consulting with your Acryl rep<br/>    executor_pool_id = optional(string, "remote")<br/><br/>    # This variable is DEPRECATED. Use executor_pool_id instead.<br/>    executor_id = optional(string, "remote")<br/><br/>    # The channel/queue the executor pool listens on. "SQS" runs the standard worker;<br/>    # "KAFKA" runs the kafka-worker (DataHub Bridge), which polls GMS over HTTPS by default.<br/>    channel = optional(string, "SQS")<br/><br/>    # Number of worker threads for ingestion jobs<br/>    executor_ingestions_workers = optional(number, 4)<br/>    # Number of worker threads for monitor jobs<br/>    executor_monitors_workers = optional(number, 10)<br/>    # Ingestion signal poll interval in seconds<br/>    executor_ingestions_poll_interval = optional(number, 2)<br/>  })</pre> | n/a | yes |
 | <a name="input_desired_count"></a> [desired\_count](#input\_desired\_count) | Number of instances of the task definition to place and keep running | `number` | `1` | no |
-| <a name="input_ephemeral_storage"></a> [ephemeral\_storage](#input\_ephemeral\_storage) | The amount of ephemeral storage (in GiB) to allocate to the task. Fargate default is 20 GiB; valid range is 21–200 GiB. Increase this if you see '[Errno 28] No space left on device' errors during large ingestions (e.g. Snowflake). | <pre>object({<br>    size_in_gib = number<br>  })</pre> | `null` | no |
 | <a name="input_enable_cloudwatch_logging"></a> [enable\_cloudwatch\_logging](#input\_enable\_cloudwatch\_logging) | Determines whether CloudWatch logging is configured for the container definition | `bool` | `true` | no |
 | <a name="input_enable_execute_command"></a> [enable\_execute\_command](#input\_enable\_execute\_command) | Specifies whether to enable Amazon ECS Exec for the tasks within the service | `bool` | `true` | no |
-| <a name="input_environment"></a> [environment](#input\_environment) | The environment variables to pass to the container | <pre>list(object({<br>    name  = string<br>    value = string<br>  }))</pre> | `[]` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | The environment variables to pass to the container | <pre>list(object({<br/>    name  = string<br/>    value = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_ephemeral_storage"></a> [ephemeral\_storage](#input\_ephemeral\_storage) | The amount of ephemeral storage (in GiB) to allocate to the task. Fargate default is 20 GiB; valid range is 21–200 GiB. Increase this if you see '[Errno 28] No space left on device' errors during large ingestions (e.g. Snowflake). | <pre>object({<br/>    size_in_gib = number<br/>  })</pre> | `null` | no |
 | <a name="input_log_configuration"></a> [log\_configuration](#input\_log\_configuration) | The log configuration for the container | `any` | `{}` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Amount (in MiB) of memory used by the task | `number` | `2048` | no |
 | <a name="input_network_mode"></a> [network\_mode](#input\_network\_mode) | Docker networking mode to use for the containers in the task | `string` | `"awsvpc"` | no |
-| <a name="input_requires_compatibilities"></a> [requires\_compatibilities](#input\_requires\_compatibilities) | Set of launch types required by the task | `list(string)` | <pre>[<br>  "FARGATE"<br>]</pre> | no |
-| <a name="input_secrets"></a> [secrets](#input\_secrets) | The secrets to pass to the container. For more information, see [Specifying Sensitive Data](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html) in the Amazon Elastic Container Service Developer Guide | <pre>list(object({<br>    name      = string<br>    valueFrom = string<br>  }))</pre> | `[]` | no |
+| <a name="input_requires_compatibilities"></a> [requires\_compatibilities](#input\_requires\_compatibilities) | Set of launch types required by the task | `list(string)` | <pre>[<br/>  "FARGATE"<br/>]</pre> | no |
+| <a name="input_secrets"></a> [secrets](#input\_secrets) | The secrets to pass to the container. For more information, see [Specifying Sensitive Data](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/specifying-sensitive-data.html) in the Amazon Elastic Container Service Developer Guide | <pre>list(object({<br/>    name      = string<br/>    valueFrom = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_security_group_ids"></a> [security\_group\_ids](#input\_security\_group\_ids) | List of security groups to associate with the task | `list(string)` | `[]` | no |
 | <a name="input_security_group_rules"></a> [security\_group\_rules](#input\_security\_group\_rules) | Security group rules to add to the security group created | `any` | `{}` | no |
-| <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service (up to 255 letters, numbers, hyphens, and underscores) | `string` | `"dh-sqs-remote-executor"` | no |
+| <a name="input_service_name"></a> [service\_name](#input\_service\_name) | Name of the service (up to 255 letters, numbers, hyphens, and underscores) | `string` | `"dh-remote-executor"` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnets to associate with the task | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_task_exec_iam_role_name"></a> [task\_exec\_iam\_role\_name](#input\_task\_exec\_iam\_role\_name) | Name to use on IAM role created | `string` | `null` | no |
