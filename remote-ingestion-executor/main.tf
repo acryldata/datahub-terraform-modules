@@ -69,13 +69,20 @@ module "ecs_service" {
           name  = "DATAHUB_GMS_URL"
           value = var.datahub.url
         },
+        # Emit both pool id env vars set to the same value. Modern images read
+        # DATAHUB_EXECUTOR_POOL_ID; legacy images (<= v0.3.8) read DATAHUB_EXECUTOR_WORKER_ID.
+        # Writing both keeps the module compatible across image versions (mirrors the Helm chart).
         {
-          name  = (local.version_legacy ? "DATAHUB_EXECUTOR_WORKER_ID" : "DATAHUB_EXECUTOR_POOL_ID")
-          value = (local.version_legacy ? var.datahub.executor_pool_id : var.datahub.executor_id)
+          name  = "DATAHUB_EXECUTOR_POOL_ID"
+          value = var.datahub.executor_pool_id
+        },
+        {
+          name  = "DATAHUB_EXECUTOR_WORKER_ID"
+          value = var.datahub.executor_pool_id
         },
         {
           name  = "DATAHUB_EXECUTOR_MODE"
-          value = "worker"
+          value = var.datahub.channel == "KAFKA" ? "kafka-worker" : "worker"
         },
         {
           name  = "DATAHUB_EXECUTOR_INGESTION_MAX_WORKERS"

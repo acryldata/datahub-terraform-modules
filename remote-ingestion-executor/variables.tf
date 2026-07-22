@@ -13,13 +13,21 @@ variable "datahub" {
     # This variable is DEPRECATED. Use executor_pool_id instead.
     executor_id = optional(string, "remote")
 
-    # Number of worker threads for ingestion jobs
+    # The channel/queue the executor pool listens on.
+    channel = optional(string, "SQS")
+
+    # Number of ingestion jobs a single Remote Executor instance can run in parallel
     executor_ingestions_workers = optional(number, 4)
-    # Number of worker threads for monitor jobs
+    # Number of monitor jobs a single Remote Executor instance can run in parallel
     executor_monitors_workers = optional(number, 10)
     # Ingestion signal poll interval in seconds
-    executor_ingestions_poll_interval = optional(number, 5)
+    executor_ingestions_poll_interval = optional(number, 2)
   })
+
+  validation {
+    condition     = contains(["SQS", "KAFKA"], var.datahub.channel)
+    error_message = "datahub.channel must be either \"SQS\" or \"KAFKA\"."
+  }
 }
 
 variable "cluster_name" {
