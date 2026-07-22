@@ -16,9 +16,9 @@ variable "datahub" {
     # The channel/queue the executor pool listens on.
     channel = optional(string, "SQS")
 
-    # Number of worker threads for ingestion jobs
+    # Number of ingestion jobs a single Remote Executor instance can run in parallel
     executor_ingestions_workers = optional(number, 4)
-    # Number of worker threads for monitor jobs
+    # Number of monitor jobs a single Remote Executor instance can run in parallel
     executor_monitors_workers = optional(number, 10)
     # Ingestion signal poll interval in seconds
     executor_ingestions_poll_interval = optional(number, 2)
