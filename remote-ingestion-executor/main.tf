@@ -97,46 +97,45 @@ module "ecs_service" {
           value = var.datahub.executor_ingestions_poll_interval
         },
         # Observe/Assertion/Monitor feature flags + per-platform assertion query timeouts.
-        # Booleans are stringified for the ECS environment list.
         {
           name  = "ONLINE_SMART_ASSERTIONS_ENABLED"
-          value = tostring(var.datahub.executor_online_smart_assertions_enabled)
+          value = var.datahub.executor_online_smart_assertions_enabled
         },
         {
           name  = "DATAHUB_USE_OBSERVE_MODELS"
-          value = tostring(var.datahub.executor_use_observe_models)
+          value = var.datahub.executor_use_observe_models
         },
         {
           name  = "DATAHUB_USE_INFERENCE_V2"
-          value = tostring(var.datahub.executor_use_inference_v2)
+          value = var.datahub.executor_use_inference_v2
         },
         {
           name  = "DATAHUB_EXECUTOR_ENABLE_DELTA_BOUNDS"
-          value = tostring(var.datahub.executor_enable_delta_bounds)
+          value = var.datahub.executor_enable_delta_bounds
         },
         {
           name  = "DATAHUB_EXECUTOR_ALLOW_CALL_STATEMENTS"
-          value = tostring(var.datahub.executor_allow_call_statements)
+          value = var.datahub.executor_allow_call_statements
         },
         {
           name  = "DATAHUB_EXECUTOR_SNOWFLAKE_QUOTE_COLUMNS"
-          value = tostring(var.datahub.executor_snowflake_quote_columns)
+          value = var.datahub.executor_snowflake_quote_columns
         },
         {
           name  = "DATAHUB_EXECUTOR_SNOWFLAKE_TIMEOUT"
-          value = tostring(var.datahub.executor_snowflake_timeout)
+          value = var.datahub.executor_snowflake_timeout
         },
         {
           name  = "DATAHUB_EXECUTOR_BIGQUERY_TIMEOUT"
-          value = tostring(var.datahub.executor_bigquery_timeout)
+          value = var.datahub.executor_bigquery_timeout
         },
         {
           name  = "DATAHUB_EXECUTOR_REDSHIFT_TIMEOUT"
-          value = tostring(var.datahub.executor_redshift_timeout)
+          value = var.datahub.executor_redshift_timeout
         },
         {
           name  = "DATAHUB_EXECUTOR_DATABRICKS_TIMEOUT"
-          value = tostring(var.datahub.executor_databricks_timeout)
+          value = var.datahub.executor_databricks_timeout
         },
         {
           name  = "AWS_REGION"
