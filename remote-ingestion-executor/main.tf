@@ -30,12 +30,6 @@ module "ecs_service" {
 
   cpu    = var.cpu
   memory = var.memory
-  # The upstream ecs service module (v5.x) gates the ephemeral_storage block with
-  # `length(var.ephemeral_storage) > 0`, which errors on null. Pass an empty map
-  # (length 0 -> block omitted) when unset, or a single-entry map when set, so a
-  # null default doesn't break `terraform apply`. A plain `... ? {} : {...}`
-  # ternary won't do: type-unification would turn the empty branch into
-  # `{ size_in_gib = null }` (length 1). Maps keep the empty case truly empty.
   ephemeral_storage = var.ephemeral_storage == null ? tomap({}) : tomap({ size_in_gib = var.ephemeral_storage.size_in_gib })
   desired_count     = var.desired_count
   launch_type       = "FARGATE"
