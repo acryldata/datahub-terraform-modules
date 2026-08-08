@@ -41,6 +41,10 @@ variable "datahub" {
     executor_bigquery_timeout   = optional(number, 600)
     executor_redshift_timeout   = optional(number, 600)
     executor_databricks_timeout = optional(number, 600)
+    # uv link mode for building ingestion venvs. "hardlink" (default) shares package bytes with the
+    # uv cache (no per-venv copy / ephemeral spike); needs the venv dir and cache on the same
+    # filesystem. Falls back to "copy" automatically where hardlinks aren't possible.
+    executor_uv_link_mode = optional(string, "hardlink")
   })
 
   validation {
