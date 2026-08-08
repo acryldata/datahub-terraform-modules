@@ -138,6 +138,10 @@ module "ecs_service" {
           value = var.datahub.executor_databricks_timeout
         },
         {
+          name  = "UV_LINK_MODE"
+          value = var.datahub.executor_uv_link_mode
+        },
+        {
           name  = "AWS_REGION"
           value = data.aws_region.current.name
         },
