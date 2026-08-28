@@ -102,6 +102,10 @@ module "ecs_service" {
           value = var.datahub.executor_online_smart_assertions_enabled
         },
         {
+          name  = "SMART_FRESHNESS_QUERY_GATING_ENABLED"
+          value = var.datahub.executor_smart_freshness_query_gating_enabled
+        },
+        {
           name  = "DATAHUB_USE_OBSERVE_MODELS"
           value = var.datahub.executor_use_observe_models
         },

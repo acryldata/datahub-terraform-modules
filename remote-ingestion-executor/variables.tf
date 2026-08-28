@@ -27,9 +27,12 @@ variable "datahub" {
     # and assertion-evaluation paths. Defaults mirror the platform (datahub-helm-fork) and the
     # application-code defaults so remote executors behave identically.
     # use_observe_models / use_inference_v2 are no-ops on slim images without the datahub_observe package.
-    executor_online_smart_assertions_enabled = optional(bool, true)
-    executor_use_observe_models              = optional(bool, true)
-    executor_use_inference_v2                = optional(bool, false)
+    # smart_freshness_query_gating skips the source freshness query while the learned update
+    # interval proves the table is still fresh; set false to query on every cron firing.
+    executor_online_smart_assertions_enabled      = optional(bool, true)
+    executor_smart_freshness_query_gating_enabled = optional(bool, true)
+    executor_use_observe_models                   = optional(bool, true)
+    executor_use_inference_v2                     = optional(bool, false)
     # Emit delta-space prediction bounds. Set false for workers not yet on delta-aware code.
     executor_enable_delta_bounds = optional(bool, true)
     # Allow stored-procedure CALL statements in custom SQL assertions (off by default).
