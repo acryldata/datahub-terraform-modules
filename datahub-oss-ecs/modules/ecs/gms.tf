@@ -53,10 +53,10 @@ resource "aws_ecs_task_definition" "gms" {
       ]
 
       secrets = [
-        { name = "EBEAN_DATASOURCE_PASSWORD", valueFrom = var.datahub_secret_arn },
-        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = var.datahub_secret_arn },
-        { name = "DATAHUB_TOKEN_SERVICE_SIGNING_KEY", valueFrom = var.datahub_secret_arn },
-        { name = "DATAHUB_TOKEN_SERVICE_SALT", valueFrom = var.datahub_secret_arn },
+        { name = "EBEAN_DATASOURCE_PASSWORD", valueFrom = "${var.datahub_secret_arn}:db_password::" },
+        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = "${var.datahub_secret_arn}:datahub_system_client_secret::" },
+        { name = "DATAHUB_TOKEN_SERVICE_SIGNING_KEY", valueFrom = "${var.datahub_secret_arn}:datahub_token_service_signing_key::" },
+        { name = "DATAHUB_TOKEN_SERVICE_SALT", valueFrom = "${var.datahub_secret_arn}:datahub_token_service_salt::" },
       ]
 
       logConfiguration = {

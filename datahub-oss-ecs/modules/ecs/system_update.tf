@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "system_update" {
       ]
 
       secrets = [
-        { name = "EBEAN_DATASOURCE_PASSWORD", valueFrom = var.datahub_secret_arn },
+        { name = "EBEAN_DATASOURCE_PASSWORD", valueFrom = "${var.datahub_secret_arn}:db_password::" },
       ]
 
       logConfiguration = {

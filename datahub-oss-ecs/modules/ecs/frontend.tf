@@ -31,8 +31,8 @@ resource "aws_ecs_task_definition" "frontend" {
       ]
 
       secrets = [
-        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = var.datahub_secret_arn },
-        { name = "DATAHUB_SECRET", valueFrom = var.datahub_secret_arn },
+        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = "${var.datahub_secret_arn}:datahub_system_client_secret::" },
+        { name = "DATAHUB_SECRET", valueFrom = "${var.datahub_secret_arn}:datahub_secret::" },
       ]
 
       logConfiguration = {

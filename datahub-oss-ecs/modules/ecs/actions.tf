@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "actions" {
       ]
 
       secrets = [
-        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = var.datahub_secret_arn },
+        { name = "DATAHUB_SYSTEM_CLIENT_SECRET", valueFrom = "${var.datahub_secret_arn}:datahub_system_client_secret::" },
       ]
 
       logConfiguration = {
