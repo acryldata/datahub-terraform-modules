@@ -99,10 +99,28 @@ module "datahub_ecs" {
   metadata_service_auth_enabled = true
   datahub_system_client_id      = "__datahub_system"
 
+  # --- DataHub images -------------------------------------------------------
+  # GMS and datahub-upgrade use the public DataHub images, pinned to this
+  # release. Never use "latest" or "debug" tags.
+  datahub_version = "v0.14.1"
+
+  # Tags of the custom Frontend and Actions images you build and push to ECR
+  # (see "Before you run terraform apply" in the README).
+  frontend_image_tag = "<frontend-image-tag>"
+  actions_image_tag  = "<actions-image-tag>"
+
   # --- Not shown here -------------------------------------------------------
-  # The root module also takes the inputs that determine the resource name
-  # prefix and the DataHub image versions (gms, upgrade, frontend, actions).
-  # Copy those variables from the root variables.tf and pin the images to a
-  # DataHub release tag, for example v0.14.1. On DataHub 1.5 and later, GMS also
-  # needs DATAHUB_TOKEN_SERVICE_SIGNING_KEY and DATAHUB_TOKEN_SERVICE_SALT.
+  # The root module also takes the input that sets the resource name prefix
+  # (local.name). Copy it from the root variables.tf.
+  # On DataHub 1.5 and later, GMS also needs DATAHUB_TOKEN_SERVICE_SIGNING_KEY
+  # and DATAHUB_TOKEN_SERVICE_SALT in Secrets Manager.
+}
+
+# ECR repository URLs for the custom images. Used when pushing the images.
+output "frontend_ecr_repository_url" {
+  value = module.datahub_ecs.frontend_ecr_repository_url
+}
+
+output "actions_ecr_repository_url" {
+  value = module.datahub_ecs.actions_ecr_repository_url
 }
