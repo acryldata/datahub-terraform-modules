@@ -52,6 +52,12 @@ variable "db_backup_retention_days" {
   type = number
 }
 
+variable "db_master_password_rotation_days" {
+  type        = number
+  description = "Days between automatic rotations of the RDS-managed master password."
+  default     = 365
+}
+
 # --- MSK ---
 
 variable "msk_kafka_version" {

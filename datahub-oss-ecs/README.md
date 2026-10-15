@@ -8,7 +8,7 @@ Route 53 for public access.
 > ⚠️ This is a reference deployment, not a production-hardening guide. Use this as a guide but not as production-ready infrastructure.
 
 > **Tested version.** These templates were tested with DataHub **v0.14.1**. DataHub **1.5 and later** also require
-> `DATAHUB_TOKEN_SERVICE_SIGNING_KEY` and `DATAHUB_TOKEN_SERVICE_SALT` on GMS. They are safe to set on v0.14.1 as well.
+> `DATAHUB_TOKEN_SERVICE_SIGNING_KEY` and `DATAHUB_TOKEN_SERVICE_SALT` on GMS. 
 
 ## What this creates
 
@@ -59,6 +59,16 @@ An example secret value:
   "datahub_token_service_salt": "<value>"
 }
 ```
+
+### Database password
+
+The database master user password is not stored in the DataHub secret. RDS manages the master user password in its own Secrets Manager secret (`manage_master_user_password = true`).
+
+Currently, GMS and System Update connect to the database as the RDS master user. This **is not recommended for production**: create a separate database user with only the permissions DataHub needs, store its password in the db_password key, and update the Terraform files to use it (`EBEAN_DATASOURCE_USERNAME`).
+
+RDS rotates the master password secret every 7 days by default, but running ECS tasks only read secrets when they start. A rotation would therefore break GMS's database connection until the tasks are restarted. To avoid this, the templates set a long rotation schedule on the managed secret (`db_master_password_rotation_days`, 365 by default). If you shorten it, restart GMS with `aws ecs update-service --force-new-deployment` after every rotation.
+
+Automatic rotation can also be disabled in the Secrets Manager console, under the secret's rotation configuration. This is a manual step outside Terraform, so confirm it works for the RDS-managed secret in your account, and remove the `aws_secretsmanager_secret_rotation` resource first so Terraform does not re-apply the schedule.
 
 If a key is missing from the secret, the task fails to start with a `ResourceInitializationError`.
 

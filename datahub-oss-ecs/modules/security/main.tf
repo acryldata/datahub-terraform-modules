@@ -184,6 +184,16 @@ resource "aws_security_group_rule" "msk_tls_from_actions" {
   description               = "Kafka TLS from Actions"
 }
 
+resource "aws_security_group_rule" "msk_tls_from_system_update" {
+  type                     = "ingress"
+  from_port                = 9094
+  to_port                  = 9094
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.msk.id
+  source_security_group_id = aws_security_group.system_update.id
+  description               = "Kafka TLS from the System Update task (creates topics, sends the upgrade-done event)"
+}
+
 # --- OpenSearch -----------------------------------------------------
 
 resource "aws_security_group" "opensearch" {
