@@ -32,6 +32,36 @@ The templates are split into modules, one per concern (`networking`, `security`,
 Copy it, replace the `<placeholders>`, and set the sizing values for your environment. Run all Terraform commands
 from the directory that contains this example `main.tf`.
 
+## Secrets
+
+All DataHub secrets live in a single AWS Secrets Manager secret that holds a **JSON object**. Each ECS task
+references one key of that object, in the form `<secret-arn>:<json-key>::`, so every environment variable gets its
+own value. 
+
+The secret must contain these keys:
+
+| JSON key | Environment variable | Used by |
+|---|---|---|
+| `db_password` | `EBEAN_DATASOURCE_PASSWORD` | GMS, System Update |
+| `datahub_system_client_secret` | `DATAHUB_SYSTEM_CLIENT_SECRET` | GMS, Frontend, Actions |
+| `datahub_secret` | `DATAHUB_SECRET` | Frontend |
+| `datahub_token_service_signing_key` | `DATAHUB_TOKEN_SERVICE_SIGNING_KEY` | GMS (required on DataHub 1.5+) |
+| `datahub_token_service_salt` | `DATAHUB_TOKEN_SERVICE_SALT` | GMS (required on DataHub 1.5+) |
+
+An example secret value:
+
+```json
+{
+  "db_password": "<value>",
+  "datahub_system_client_secret": "<value>",
+  "datahub_secret": "<value>",
+  "datahub_token_service_signing_key": "<value>",
+  "datahub_token_service_salt": "<value>"
+}
+```
+
+If a key is missing from the secret, the task fails to start with a `ResourceInitializationError`.
+
 ## Before you run `terraform apply`
 
 1. **Build and push the custom Frontend and Actions images.** These services will fail to start
@@ -79,9 +109,9 @@ terraform apply
 
 **Note:** Once everything is deployed:
 
-1. Set the necessary secrets in Secrets Manager. On DataHub 1.5 and later this includes
-   `DATAHUB_TOKEN_SERVICE_SIGNING_KEY` and `DATAHUB_TOKEN_SERVICE_SALT` for GMS.
-2. Run the System Update task (`aws ecs run-task`). 
+1. Set the secret values in Secrets Manager, as a JSON object with the keys listed in [Secrets](#secrets).
+   On DataHub 1.5 and later this includes `datahub_token_service_signing_key` and `datahub_token_service_salt`.
+2. Run the System Update task (`aws ecs run-task`).
 3. Restart all ECS services (`aws ecs update-service --force-new-deployment`) so they pick up the secrets.
 
 The exact commands are in the guide's
