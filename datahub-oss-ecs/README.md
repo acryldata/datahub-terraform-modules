@@ -60,6 +60,8 @@ An example secret value:
 }
 ```
 
+If a key is missing from the secret, the task fails to start with a `ResourceInitializationError`.
+
 ### Database password
 
 The database master user password is not stored in the DataHub secret. RDS manages the master user password in its own Secrets Manager secret (`manage_master_user_password = true`).
@@ -70,8 +72,6 @@ RDS rotates the master password secret every 7 days by default, but running ECS 
 
 Automatic rotation can also be disabled in the Secrets Manager console, under the secret's rotation configuration. This is a manual step outside Terraform, so confirm it works for the RDS-managed secret in your account, and remove the `aws_secretsmanager_secret_rotation` resource first so Terraform does not re-apply the schedule.
 
-If a key is missing from the secret, the task fails to start with a `ResourceInitializationError`.
-
 ## Before you run `terraform apply`
 
 1. **Build and push the custom Frontend and Actions images.** These services will fail to start
@@ -79,8 +79,7 @@ If a key is missing from the secret, the task fails to start with a `ResourceIni
 
    ```bash
    terraform init
-   terraform workspace select -or-create <environment>
-   terraform apply -target=module.datahub_ecs.module.ecr
+   terraform apply -var environment=<environment> -target=module.datahub_ecs.module.ecr
    ```
 
    Then build and push:
@@ -112,9 +111,8 @@ If a key is missing from the secret, the task fails to start with a `ResourceIni
 ```bash
 terraform init
 terraform validate
-terraform workspace select -or-create <environment>
-terraform plan
-terraform apply
+terraform plan -var environment=<environment>
+terraform apply -var environment=<environment>
 ```
 
 **Note:** Once everything is deployed:
