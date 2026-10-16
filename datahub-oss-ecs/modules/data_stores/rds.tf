@@ -46,8 +46,3 @@ resource "aws_secretsmanager_secret_rotation" "db_master" {
     automatically_after_days = var.db_master_password_rotation_days
   }
 }
-
-# ARN of the RDS-managed secret. ECS tasks reference it as "<arn>:password::".
-output "db_master_secret_arn" {
-  value = aws_db_instance.this.master_user_secret[0].secret_arn
-}

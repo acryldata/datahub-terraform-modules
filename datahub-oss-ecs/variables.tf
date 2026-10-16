@@ -15,11 +15,7 @@ variable "project_name" {
 }
 
 variable "environment" {
-  description = <<-EOT
-    Environment name (dev/staging/prod). Defaults to the current Terraform workspace so that
-    `terraform workspace select -or-create <environment>` (see docs/deploy/aws-ecs.md) drives naming
-    without needing a separate variable per workspace. Override explicitly if you don't use workspaces.
-  EOT
+  description = "Environment name (dev/staging/prod)."
   type    = string
   default = null
 }

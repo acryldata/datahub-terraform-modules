@@ -3,7 +3,7 @@
 
 aws_region   = "us-east-1"
 project_name = "datahub"
-# environment defaults to the current `terraform workspace` if left unset — see variables.tf.
+environment = "staging"
 
 # --- Public access (ALB + Route 53) ---
 enable_public_access = true
