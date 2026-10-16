@@ -7,8 +7,7 @@ Route 53 for public access.
 
 > ⚠️ This is a reference deployment, not a production-hardening guide. Use this as a guide but not as production-ready infrastructure.
 
-> **Tested version.** These templates were tested with DataHub **v0.14.1**. DataHub **1.5 and later** also require
-> `DATAHUB_TOKEN_SERVICE_SIGNING_KEY` and `DATAHUB_TOKEN_SERVICE_SALT` on GMS. 
+> These templates are a generalized version of a real DataHub v0.14.1 deployment on ECS. They are not the exact files used in that deployment and have not been deployed as is, so review and test them in your own environment before use.
 
 ## What this creates
 
