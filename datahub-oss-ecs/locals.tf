@@ -1,5 +1,5 @@
 locals {
-  environment = coalesce(var.environment, terraform.workspace)
+  environment = var.environment
   name        = "${var.project_name}-${local.environment}"
 
   common_tags = merge(
