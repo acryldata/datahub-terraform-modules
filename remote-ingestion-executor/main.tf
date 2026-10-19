@@ -28,9 +28,9 @@ module "ecs_service" {
   task_exec_ssm_param_arns    = var.task_exec_ssm_param_arns
   task_exec_secret_arns       = var.task_exec_secret_arns
 
-  cpu               = var.cpu
-  memory            = var.memory
-  ephemeral_storage = var.ephemeral_storage
+  cpu    = var.cpu
+  memory = var.memory
+  ephemeral_storage = var.ephemeral_storage == null ? tomap({}) : tomap({ size_in_gib = var.ephemeral_storage.size_in_gib })
   desired_count     = var.desired_count
   launch_type       = "FARGATE"
 
