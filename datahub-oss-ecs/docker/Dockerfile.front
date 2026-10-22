@@ -1,0 +1,3 @@
+FROM acryldata/datahub-frontend-react:<version-tag>
+
+COPY user.props /datahub-frontend/conf/
