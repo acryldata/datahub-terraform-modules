@@ -96,14 +96,6 @@ module "ecs_service" {
           name  = "DATAHUB_EXECUTOR_INGESTION_SIGNAL_POLL_INTERVAL"
           value = var.datahub.executor_ingestions_poll_interval
         },
-        {
-          name  = "DATAHUB_EXECUTOR_STATUS_DETAILS_ENABLED"
-          value = var.datahub.executor_status_details_enabled
-        },
-        {
-          name  = "DATAHUB_EXECUTOR_REPORT_RUNTIME"
-          value = var.datahub.executor_report_runtime
-        },
         # Observe/Assertion/Monitor feature flags + per-platform assertion query timeouts.
         {
           name  = "ONLINE_SMART_ASSERTIONS_ENABLED"
