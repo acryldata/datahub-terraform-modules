@@ -1,0 +1,24 @@
+name: "ingestion_executor" 
+source:
+  type: "kafka"
+  config:
+    connection:
+      bootstrap: ${KAFKA_BOOTSTRAP_SERVER}
+      schema_registry_url: ${SCHEMA_REGISTRY_URL}
+      consumer_config:
+        security.protocol: SSL
+        ssl.ca.location: /etc/datahub/kafka/certs/<certificate_name>.pem
+    topic_routes:
+      mcl: ${METADATA_CHANGE_LOG_VERSIONED_TOPIC_NAME:-MetadataChangeLog_Versioned_v1}
+filter: 
+  event_type: "MetadataChangeLogEvent_v1"
+  event: 
+    entityType: "dataHubExecutionRequest"
+    changeType: "UPSERT"
+action:
+  type: "executor"
+  config: {}
+datahub:
+  server: "${DATAHUB_GMS_PROTOCOL:-http}://${DATAHUB_GMS_HOST}:${DATAHUB_GMS_PORT}"
+  extra_headers:
+    Authorization: "Basic ${DATAHUB_SYSTEM_CLIENT_ID}:${DATAHUB_SYSTEM_CLIENT_SECRET}"
