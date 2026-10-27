@@ -25,8 +25,8 @@ variable "datahub" {
     # Send the detailed status (work intake, task slots, running tasks) with each heartbeat, and
     # the runtime report (resources, settings, environment). Both show on the Executors page.
     # Set false to turn either off; older executor images ignore them.
-    executor_status_details_enabled = optional(bool, true)
-    executor_report_runtime         = optional(bool, true)
+    executor_reporting_status_details_enabled  = optional(bool, true)
+    executor_reporting_runtime_details_enabled = optional(bool, true)
 
     # Observe/Assertion/Monitor feature flags consumed by the executor worker's monitor-training
     # and assertion-evaluation paths. Defaults mirror the platform (datahub-helm-fork) and the

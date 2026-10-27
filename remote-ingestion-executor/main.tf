@@ -98,11 +98,11 @@ module "ecs_service" {
         },
         {
           name  = "DATAHUB_EXECUTOR_STATUS_DETAILS_ENABLED"
-          value = var.datahub.executor_status_details_enabled
+          value = var.datahub.executor_reporting_status_details_enabled
         },
         {
           name  = "DATAHUB_EXECUTOR_REPORT_RUNTIME"
-          value = var.datahub.executor_report_runtime
+          value = var.datahub.executor_reporting_runtime_details_enabled
         },
         # Observe/Assertion/Monitor feature flags + per-platform assertion query timeouts.
         {
