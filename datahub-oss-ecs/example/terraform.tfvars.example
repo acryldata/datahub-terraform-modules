@@ -1,0 +1,22 @@
+# Copy to terraform.tfvars and fill in the values marked <required>.
+# Everything else has a working default
+
+aws_region   = "us-east-1"
+project_name = "datahub"
+environment = "staging"
+
+# --- Public access (ALB + Route 53) ---
+enable_public_access = true
+acm_certificate_arn  = "" # <required if enable_public_access = true> arn:aws:acm:...
+route53_zone_id      = "" # optional — leave blank to skip DNS record creation
+dns_name              = "" # optional — e.g. "datahub.example.com", required if route53_zone_id is set
+alb_ingress_cidrs    = ["0.0.0.0/0"] 
+
+# --- DataHub image versions — never "latest" or "debug" ---
+datahub_version    = "v0.14.1"
+frontend_image_tag = "v0.14.1"
+actions_image_tag  = "v0.14.1"
+
+tags = {
+  Owner = "<your-team>"
+}
