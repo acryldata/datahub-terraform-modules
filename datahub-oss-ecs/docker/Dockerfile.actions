@@ -1,0 +1,13 @@
+FROM acryldata/datahub-actions:<version-tag>
+
+USER root
+
+RUN rm -f /etc/datahub/actions/system/conf/*
+
+USER datahub 
+
+COPY <certificate_name>.pem /etc/datahub/kafka/certs/
+COPY executor.yaml /etc/datahub/actions/system/conf/
+COPY doc_propagation_action.yaml /etc/datahub/actions/system/conf/
+COPY slack_action.yaml /etc/datahub/actions/system/conf/
+COPY teams_action.yaml /etc/datahub/actions/system/conf/
