@@ -97,6 +97,10 @@ module "ecs_service" {
           value = var.datahub.executor_ingestions_poll_interval
         },
         {
+          name  = "DATAHUB_EXECUTOR_PRINT_SUBPROCESS_LOGS"
+          value = var.datahub.executor_ingestions_print_subprocess_logs
+        },
+        {
           name  = "DATAHUB_EXECUTOR_STATUS_DETAILS_ENABLED"
           value = var.datahub.executor_reporting_status_details_enabled
         },
