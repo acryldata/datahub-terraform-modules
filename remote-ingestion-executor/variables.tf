@@ -21,7 +21,8 @@ variable "datahub" {
     # Number of monitor jobs a single Remote Executor instance can run in parallel
     executor_monitors_workers = optional(number, 10)
     # Ingestion signal poll interval in seconds
-    executor_ingestions_poll_interval = optional(number, 2)
+    executor_ingestions_poll_interval         = optional(number, 2)
+    executor_ingestions_print_subprocess_logs = optional(bool, true)
     # Send the detailed status (work intake, task slots, running tasks) with each heartbeat, and
     # the runtime report (resources, settings, environment). Both show on the Executors page.
     # Set false to turn either off; older executor images ignore them.
